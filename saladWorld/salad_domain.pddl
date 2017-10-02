@@ -1,0 +1,50 @@
+(define (domain salad-world)
+  (:requirements :strips)
+  (:predicates (leafy ?x)
+               (vegetable ?x)
+               (crunchy ?x)
+               (dressing ?x)
+               (knife ?x)
+               (chopstick ?x)
+               (bowl ?x)
+               (cutting-board ?x)
+               (table ?x)
+               (sink ?x)
+               (is-clean ?x)
+               (is-cut ?x)
+               (hand-empty)
+               (free ?x)
+               (intact ?x)
+               (holding ?x)
+               (on_or_in ?x ?y)
+               (salad-ready))
+  (:action cut
+      :parameters (?x ?y ?z)
+      :precondition (and (vegetable ?x) (knife ?y) (holding ?y) (on_or_in ?x ?z) (cutting-board ?z))
+      :effect (is-cut ?x)
+  )
+
+  (:action wash
+      :parameters (?x ?y)
+      :precondition (and (vegetable ?x) (sink ?y) (on_or_in ?x ?y))
+      :effect (is-clean ?x)
+  )
+
+  (:action mix
+      :parameters (?b ?c ?d ?x ?y ?z) 
+      :precondition (and (bowl ?b) (chopstick ?c) (holding ?c) (dressing ?d) (vegetable ?x) (leafy ?x) (is-cut ?x) (is-clean ?x) (vegetable ?y) (is-cut ?y) (is-clean ?y) (crunchy ?z) (on_or_in ?x ?b) (on_or_in ?y ?b) (on_or_in ?z ?b) (on_or_in ?d ?b) (not (= ?x ?y)))
+      :effect (salad-ready)
+  )
+
+  (:action pickup
+      :parameters (?x ?y)
+      :precondition (and (hand-empty) (on_or_in ?x ?y) (or (table ?y) (sink ?y) (bowl ?y)))
+      :effect (and (not (hand-empty)) (holding ?x) (not (on_or_in ?x ?y)))
+  )
+
+  (:action put
+      :parameters (?x ?y)
+      :precondition (and (holding x) (or (table ?y) (sink ?y) (bowl ?y)))
+      :effect (and (hand-empty) (not (holding x)) (on_or_in ?x ?y))
+  )
+)
